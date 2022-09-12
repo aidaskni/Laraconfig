@@ -144,11 +144,6 @@ class CreateNewMetadata
         // simply inserting them by each user. We will also point the ID of
         // both the Metadata parent and user, along with the default value.
         foreach ($models as $model) {
-
-            if (get_class($model) != $metadata->model) {
-                continue;
-            }
-
             $affected += Setting::query()->insertUsing(
                 ['metadata_id', 'settable_id', 'settable_type', 'value', 'created_at', 'updated_at'],
                 $model->newQuery()
