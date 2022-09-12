@@ -19,7 +19,7 @@ use RuntimeException;
 class SettingsCollection extends Collection
 {
     use EnumeratesValues {
-        __get as __dynamicGet;
+        EnumeratesValues::__get as __dynamicGet;
     }
     /**
      * The cache helper instance.

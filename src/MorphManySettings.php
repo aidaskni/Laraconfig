@@ -124,13 +124,26 @@ class MorphManySettings extends MorphMany
         $this->cache?->invalidate();
 
         // Add the collection to the relation, avoiding retrieving them again later.
-        $this->getParent()->setRelation('settings', $settings = new SettingsCollection());
+//        $this->getParent()->setRelation('settings', $settings = new SettingsCollection());
+        $settings = new SettingsCollection();
 
         foreach (Metadata::query()->lazyById(column: 'id') as $metadatum) {
-            $setting = $query->make()->forceFill([
-                'metadata_id' => $metadatum->getKey(),
-                'value' => $metadatum->default
-            ]);
+//            $setting = $query->make()->forceFill([
+//                'metadata_id' => $metadatum->getKey(),
+//                'value' => $metadatum->default
+//            ]);
+
+            if ($metadatum->type == 'array'){
+                $setting = $query->make()->forceFill([
+                    'metadata_id' => $metadatum->getKey(),
+                    'value' => json_encode($metadatum->default)
+                ]);
+            }else {
+                $setting = $query->make()->forceFill([
+                    'metadata_id' => $metadatum->getKey(),
+                    'value' => $metadatum->default
+                ]);
+            }
 
             $setting->saveQuietly();
 
@@ -142,6 +155,10 @@ class MorphManySettings extends MorphMany
         }
 
         $settings->cache = $this->cache;
+
+        $this->getParent()->setRelation('settings', new SettingsCollection(
+            $this->prepareCollection($settings)->all()
+        ));
     }
 
     /**

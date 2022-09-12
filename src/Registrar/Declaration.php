@@ -244,7 +244,7 @@ class Declaration
      */
     public function toMetadata(): Metadata
     {
-        return (new Metadata)->forceFill([
+        return (new Metadata())->forceFill([
             'name'          => $this->name,
             'type'          => $this->type,
             'default'       => $this->default,

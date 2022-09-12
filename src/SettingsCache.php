@@ -74,7 +74,7 @@ class SettingsCache implements Serializable
     public function shouldRegenerate(): bool
     {
         // If the time doesn't exist in the cache then we can safely store.
-        if (!$time = $this->cache->get("$this->key:time")) {
+        if (!isset($this->cache) || !$time = $this->cache?->get("$this->key:time")) {
             return true;
         }
 
@@ -91,7 +91,7 @@ class SettingsCache implements Serializable
      */
     public function regenerate(bool $force = false): void
     {
-        if ($force || $this->shouldRegenerate()) {
+        if (isset($this->cache) && $force || $this->shouldRegenerate()) {
             $this->cache->setMultiple([
                 $this->key => $this->settings,
                 "$this->key:time" => now(),
